@@ -1,0 +1,38 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+* {
+    box-sizing: border-box;
+}
+.container {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+.frame {
+    border: 1px solid red;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+.elevator-container {
+    height: auto;
+    background-color: ghostwhite;
+    background-color: 2px solid gainsboro;
+}
+.elevator {
+    width: 2rem;
+    height: 4rem;
+    background-color: gainsboro;
+    border: 2px solid gray;
+
+}
+
+.floor button {
+    height: 4rem;
+    width: 10rem;
+}
+
+.run {
+    height: 4rem;
+}
