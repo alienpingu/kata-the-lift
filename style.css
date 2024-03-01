@@ -10,29 +10,37 @@ html, body {
     text-align: center;
 }
 .frame {
-    border: 1px solid red;
     display: flex;
     justify-content: center;
     gap: 2rem;
 }
-.elevator-container {
-    height: auto;
-    background-color: ghostwhite;
-    background-color: 2px solid gainsboro;
-}
+
 .elevator {
     width: 2rem;
     height: 4rem;
-    background-color: gainsboro;
-    border: 2px solid gray;
-
+    position: absolute;
+    background-color: gray;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    transition: top 1s ease;
 }
+.elevator .doors {
+    height: 100%;
+    width: 0;
+    border: 2px solid black;
+    border-top: 0;
+    border-bottom: 0;
+    transition: width 2s ease-in-out,background-color 2s ease-in-out;
+}
+.elevator .doors.open {
+    width: 100%;
+    background-color: bisque;
+    transition: width 2s ease-in-out,background-color 2s ease-in-out;
+
+} 
 
 .floor button {
     height: 4rem;
     width: 10rem;
-}
-
-.run {
-    height: 4rem;
 }

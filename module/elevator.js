@@ -1,54 +1,68 @@
 class Elevator {
+    areDoorsOpen = false;
+    $elevator = document.querySelector('.elevator');
+    $doors = document.querySelector('.elevator .doors');
+    $displayFloor = document.querySelector('.display .floor');
+    $displayAction = document.querySelector('.display .action');
+    
     constructor(actualFloor) {
         this.actualFloor = actualFloor || 0;
-        this.calledFloors = []
     }
 
-    requestMovements = (calledFloors) =>  {
-        calledFloors.forEach(floor => {
-            (floor === this.actualFloor) || this.calledFloors.push(floor)
-        })
-        let beforeActualFloor = this.calledFloors.filter(n => n > this.actualFloor);
-        let afterActualFloor = this.calledFloors.filter(n => n <= this.actualFloor);
-        beforeActualFloor.sort((a, b) => a - b);
-        afterActualFloor.sort((a, b) => b - a); 
-        const sorted = beforeActualFloor.concat(afterActualFloor);
-        this.calledFloors = [...new Set(sorted)];
-        return(this.calledFloors)
-    };
-
-    computeMovments = () =>  {
-        let index = 0;
-        let movmentsArr = []
-        while (this.calledFloors.length > 0 ) {
-            const from = this.actualFloor   
-            const to = this.calledFloors[0]
-            while (to !== this.actualFloor) {
-                if (to > from) {
-                    movmentsArr.push({
-                        action: "UP",
-                        from: from,
-                        to: this.actualFloor
-                    })
-                    this.actualFloor++
-                } else if (to < from) {
-                    movmentsArr.push({
-                        action: "DOWN",
-                        from: from,
-                        to: this.actualFloor
-                    })
-                    this.actualFloor--
-                }
+    async openDoors() {
+        await new Promise(resolve => {
+            if (!this.$doors.classList.contains('open')) {
+                this.$doors.classList.add('open');
+                this.areDoorsOpen = true;
+                setTimeout(() => resolve(), 2000)
+            } else {
+                resolve();
             }
-            movmentsArr.push({
-                action: "DING",
-                from: from,
-                to: this.actualFloor
-            })
-            this.calledFloors.shift()
-            index++;
-        }
-        return(movmentsArr);
-    }   
+        
+        });
+    }
+
+    async closeDoors() {
+        await new Promise(resolve => {
+            if (this.$doors.classList.contains('open')) {
+                this.areDoorsOpen = false;
+                this.$doors.classList.remove('open');
+                setTimeout(() => resolve(), 2000)
+            } else {
+                resolve();
+            }
+        
+        });
+    }
+
+    async move(floorsCord, options) {
+        const {action, time, to} = options;
+        const floorCord = floorsCord.find(floor => floor.id === to);
+
+        await new Promise(async resolve => {
+            switch(action) {
+                case 'UP':
+                case 'DOWN':
+                    this.$elevator.style.transitionDuration = time/1000 + 's';
+                    this.$elevator.style.top = floorCord.y + 'px';
+                    setTimeout(() => resolve(), time)
+                    break;
+                case 'DING':
+                    await this.openDoors();
+                    await this.closeDoors();
+                    setTimeout(() => resolve(), time)
+                    break;
+                default:
+                    this.$elevator.style.top = floorCord.y + 'px';
+                    setTimeout(() => resolve(), time)
+                    break;
+            }
+        });
+    }
+
+    display(options) {
+        this.$displayAction.innerHTML = options.to
+        this.$displayFloor.innerHTML = floor
+    }
 
 }
