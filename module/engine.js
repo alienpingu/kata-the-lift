@@ -14,23 +14,21 @@ class Engine {
         this.elevator.move(building.floorsCoord, { action: 'TELEPORT', to: 0, time: 0 });
     }
 
-    async buttonClick(floor) {
+    buttonClick(floor) {
+        this.calledFloors.push(floor);
+        this.computeMovements();
+
         if (this.btnTimeout) {
             clearTimeout(this.btnTimeout);
         }
-        this.calledFloors.push(floor);
-
-        await new Promise(resolve => {
-            this.computeMovements();
-            this.btnTimeout = setTimeout(async () => {
-                await this.routine();
-                resolve();
-            }, 1500);
-        });
+        this.btnTimeout = setTimeout(() => {
+            this.routine()
+            this.movementsList = [];
+            this.btnTimeout = undefined;
+        }, 1500)
     }
 
     computeMovements() {
-        this.movementsList = [];
         while (this.calledFloors.length > 0) {
             const from = this.actualFloor;
             const to = this.calledFloors[0];
