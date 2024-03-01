@@ -1,68 +1,54 @@
 class Elevator {
-    areDoorsOpen = false;
-    $elevator = document.querySelector('.elevator');
-    $doors = document.querySelector('.elevator .doors');
-    $displayFloor = document.querySelector('.display .floor');
-    $displayAction = document.querySelector('.display .action');
-    
     constructor(actualFloor) {
+        this.areDoorsOpen = false;
+        this.$elevator = document.querySelector('.elevator');
+        this.$doors = document.querySelector('.elevator .doors');
+        this.$displayFloor = document.querySelector('.display .floor');
+        this.$displayAction = document.querySelector('.display .action');
         this.actualFloor = actualFloor || 0;
     }
 
     async openDoors() {
-        await new Promise(resolve => {
-            if (!this.$doors.classList.contains('open')) {
-                this.$doors.classList.add('open');
-                this.areDoorsOpen = true;
-                setTimeout(() => resolve(), 2000)
-            } else {
-                resolve();
-            }
-        
-        });
+        if (this.$doors.classList.contains('open')) return;
+        this.$doors.classList.add('open');
+        this.areDoorsOpen = true;
+        await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     async closeDoors() {
-        await new Promise(resolve => {
-            if (this.$doors.classList.contains('open')) {
-                this.areDoorsOpen = false;
-                this.$doors.classList.remove('open');
-                setTimeout(() => resolve(), 2000)
-            } else {
-                resolve();
-            }
-        
-        });
+        if (!this.$doors.classList.contains('open')) return;
+        this.$doors.classList.remove('open');
+        this.areDoorsOpen = false;
+        await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     async move(floorsCord, options) {
-        const {action, time, to} = options;
+        const { action, time, to } = options;
         const floorCord = floorsCord.find(floor => floor.id === to);
-
         await new Promise(async resolve => {
             switch(action) {
                 case 'UP':
                 case 'DOWN':
                     this.$elevator.style.transitionDuration = time/1000 + 's';
                     this.$elevator.style.top = floorCord.y + 'px';
-                    setTimeout(() => resolve(), time)
+                    setTimeout(resolve, time);
                     break;
                 case 'DING':
                     await this.openDoors();
                     await this.closeDoors();
-                    setTimeout(() => resolve(), time)
+                    setTimeout(resolve, time);
                     break;
                 default:
                     this.$elevator.style.top = floorCord.y + 'px';
-                    setTimeout(() => resolve(), time)
+                    setTimeout(resolve, time);
                     break;
             }
         });
     }
 
     display(options) {
-        this.$displayAction.innerHTML = options.to
-        this.$displayFloor.innerHTML = floor
+        const { to, floor } = options;
+        this.$displayAction.innerHTML = to;
+        this.$displayFloor.innerHTML = floor;
     }
-
 }
